@@ -140,11 +140,16 @@ if ($$one('[data-flickitythis]')) {
 }
 
 // another cheeky double bracket usage example
-window.addEventListener('resize', function() {
-	if ((wut = $$one('header .open'))) {
-		wut.classList.remove('open');
-	}
-});
+// AND auto expanding textarea, source https://justmarkup.com/log/2016/10/enhancing-a-comment-form/
+if ((tehtextarea = $$one('.contactform textarea'))) {
+	tehtextarea.addEventListener('keydown', function() {
+		var el = this;
+		setTimeout(function() {
+			el.style.cssText = "height:auto;";
+			el.style.cssText = "height:" + el.scrollHeight + "px";
+		}, 0);
+	});
+}
 
 // keep the below at the bottom of the file to de prioritise their use
 
