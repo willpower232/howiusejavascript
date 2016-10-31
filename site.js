@@ -4,7 +4,7 @@
 (function() {
 	// this may error horribly in IE9
 	var oldLog = console.log;
-	console.log = function (message) {
+	console.log = function(message) {
 		if (typeof message === "string" || typeof message === "number") {
 			oldLog("%c"+message, 'color:hotpink;font-family:Comic Sans MS;font-size:24px;font-weight:700');
 		} else {
@@ -63,12 +63,12 @@ var Loader = {
 		switch (dawut) {
 			case "flickity":
 				// linking to a specific version for a reason I cannot remember right now, could be CSP or time related
-				teh.src = 'https://npmcdn.com/flickity@2.0.3/dist/flickity.pkgd.min.js';
+				teh.src = "https://npmcdn.com/flickity@2.0.5/dist/flickity.pkgd.min.js";
 
 				// extra CSS required here, overriden by specificity in the main CSS file
 				var fcss = document.createElement('link');
 				fcss.rel = "stylesheet";
-				fcss.href = "https://npmcdn.com/flickity@2.0.3/dist/flickity.min.css";
+				fcss.href = "https://npmcdn.com/flickity@2.0.5/dist/flickity.min.css";
 				document.head.appendChild(fcss);
 				break;
 			case "iframeresizer":
@@ -126,6 +126,7 @@ if ($$one('[data-flickitythis]')) {
 			// cheeky double bracket usage example
 			// - seems to save a line of code and work in all browsers
 			if ((tehtestimonials = $$one('.testimonials .quotes[data-flickitythis]')) && tehtestimonials.querySelectorAll('.slide').length > 1) {
+				// adding flickity instance to variable not necessary
 				var tt = new Flickity(tehtestimonials, {
 					adaptiveHeight: true,
 					pageDots: false,
@@ -144,6 +145,8 @@ window.addEventListener('resize', function() {
 		wut.classList.remove('open');
 	}
 });
+
+// keep the below at the bottom of the file to de prioritise their use
 
 // set all external links to open in a new tab/window
 if ($$one('a[href^=http]')) {
