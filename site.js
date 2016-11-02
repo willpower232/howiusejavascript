@@ -194,6 +194,85 @@ if ((tehmap = $$one('.themap .wrapper'))) {
 	};
 }
 
+// intercept all requests for the forms controller
+if ($$all('form[action="/forms/go"]').length) {
+	$$all('form[action="/forms/go"]').forEach(function(form) {
+
+		// optimistically remove the required markers on focus
+		form.addEventListener('focus', function(ev) {
+			if (ev.target.tagName == "SELECT") {
+				ev.target.parentNode.classList.remove('required');
+			} else {
+				ev.target.classList.remove('required');
+			}
+		}, true);
+
+		form.addEventListener('submit', function(ev) {
+			if (typeof FormData !== "undefined") {
+				ev.preventDefault();
+				var tehform = ev.target,
+					tehdata = new FormData(tehform),
+					request = new XMLHttpRequest(),
+					message = $$one('p', tehform); // element to write messages in
+
+				// make sure there are no outstanding required markers
+				$$all('.required', tehform).forEach(function(el) {
+					el.classList.remove('required');
+				});
+
+				request.open('POST', "/forms/go");
+				request.setRequestHeader("X-Requested-With", "XMLHttpRequest"); // clearly identify ajax to the server code
+				request.onreadystatechange = function() {
+					if (this.readyState === 4) {
+						if (this.status >= 200 && this.status < 400) {
+							var output = this.responseText,
+								okay = false;
+							try {
+								output = JSON.parse(output);
+								okay = true;
+							}
+							catch (e) {
+								// output is HTML or plain text
+							}
+
+							// we want JSON ideally
+							if (okay) {
+								if (output.worked === 0) {
+									message.innerHTML = "Please check the highlighted fields below.";
+									output.errors.forEach(function(name) {
+										// replaced select element needs required marker on the container
+										if (name == "branch") {
+											$$one('[name='+name+']', tehform).parentNode.classList.add('required');
+										} else {
+											$$one('[name='+name+']', tehform).classList.add('required');
+										}
+									});
+								} else {
+									message.innerHTML = output.html;
+									// empty the form so only the thank you message is visible
+									$$all('.selectwrapper,label,input,textarea', tehform).forEach(function(el) {
+										el.parentNode.removeChild(el);
+									});
+								}
+							} else {
+								// debug
+								alert("Unfortunately we did not receive your message. Response: " + output);
+							}
+
+						} else {
+							// debug
+							alert("Unfortunately we did not receive your message. Code: " + this.status);
+						}
+					}
+				};
+				request.send(tehdata);
+			} else {
+				// carry on as usual as formdata doesn't exist
+			}
+		});
+	});
+}
+
 // keep the below at the bottom of the file to de prioritise their use
 
 // set all external links to open in a new tab/window
