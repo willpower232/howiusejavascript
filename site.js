@@ -16,6 +16,7 @@
 // helper based on https://github.com/edenspiekermann/a11y-dialog/blob/master/a11y-dialog.js#L39
 // - alternate link https://github.com/edenspiekermann/a11y-dialog/blob/8cb7e10ff099628ba983d615f122a5a6147cb830/a11y-dialog.js#L14
 // - this returns an array instead of a NodeList allowing forEach to work
+// - means you don't need to write querySelector at all any more, saving a few bytes
 var $$all = function(selector, context) {
 	try {
 		return Array.prototype.slice.call((context || document).querySelectorAll(selector));
@@ -125,7 +126,7 @@ if ($$one('[data-flickitythis]')) {
 		Loader.load('flickity', function() {
 			// cheeky double bracket usage example
 			// - seems to save a line of code and work in all browsers
-			if ((tehtestimonials = $$one('.testimonials .quotes[data-flickitythis]')) && tehtestimonials.querySelectorAll('.slide').length > 1) {
+			if ((tehtestimonials = $$one('.testimonials .quotes[data-flickitythis]')) && $$all('.slide', tehtestimonials).length > 1) {
 				// adding flickity instance to variable not necessary
 				var tt = new Flickity(tehtestimonials, {
 					adaptiveHeight: true,
