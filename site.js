@@ -151,6 +151,48 @@ if ((tehtextarea = $$one('.contactform textarea'))) {
 	});
 }
 
+if ((tehmap = $$one('.themap .wrapper'))) {
+	//google maps has a more explicit loading callback
+	Loader.load('https://maps.googleapis.com/maps/api/js?key=YOURAPIKEY&callback=mapinit');
+	var mapinit = function() {
+
+		//list of points to describe the bounding box for the map
+		//- first point will have a big pin on it
+		var points = [
+			{lat: 53.2286607, lng: -0.5504175}, //UoL
+			{lat: 53.2343636, lng: -0.5386587}  //Castle Square, Lincoln
+		];
+
+		//create the map
+		//- scrollwheel is annoying unless full screen
+		var map = new google.maps.Map(tehmap, {
+			center: points[0], //initial center overridden by the bounds
+			scrollwheel: false,
+			zoom: 8
+		});
+
+		//place the pin on your main point
+		new google.maps.Marker({
+			position: points[0],
+			map: map,
+			icon: '/assets/front/img/bigpoint.svg'
+		});
+
+		//create the bounds to focus the map
+		var bounds = new google.maps.LatLngBounds();
+		points.forEach(function(p) {
+			bounds.extend(p);
+		});
+
+		//keep the map focussed where you want it to be
+		var setBounds = function() {
+			map.fitBounds(bounds);
+		};
+		window.addEventListener('resize', setBounds);
+		setBounds();
+	};
+}
+
 // keep the below at the bottom of the file to de prioritise their use
 
 // set all external links to open in a new tab/window
