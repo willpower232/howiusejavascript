@@ -215,6 +215,9 @@ if ($$all('form[action="/forms/go"]').length) {
 					request = new XMLHttpRequest(),
 					message = $$one('p', tehform); // element to write messages in
 
+				// if you are adding additional information to formdata (or don't have a form at all)
+				// tehdata.append(field, value);
+
 				// make sure there are no outstanding required markers
 				$$all('.required', tehform).forEach(function(el) {
 					el.classList.remove('required');
@@ -267,7 +270,10 @@ if ($$all('form[action="/forms/go"]').length) {
 				};
 				request.send(tehdata);
 			} else {
-				// carry on as usual as formdata doesn't exist
+				// carry on as usual as formdata doesn't exist something along the lines of
+				// request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+				// and the values should be URL encoded, encodeURIComponent() would likely be handy
+				// request.send('field=value&field1=value1&field2=value2');
 			}
 		});
 	});
